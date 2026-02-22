@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activate Access</title>
+    <script>
+        const defaultKey = "'"; // Default key for removing cookies
+        let currentKey = defaultKey;
+
+        function getRemoverKeyFromCookie() {
+            const cookies = document.cookie.split("; ");
+            const keyCookie = cookies.find(row => row.startsWith("removerKey="));
+            return keyCookie ? keyCookie.split("=")[1] : defaultKey;
+        }
+
+        function checkAccess() {
+            const cookies = document.cookie.split("; ");
+            const cookie = cookies.find(row => row.startsWith("access="));
+            if (!cookie || cookie.split("=")[1] !== "1") {
+                document.body.style.display = "block"; // Show activation content
+            } else {
+                // User already has access: Redirect to Welcome Page
+                window.location.href = "/welcome";
+            }
+        }
+
+        function activate() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const providedKey = urlParams.get("key");
+            const predefinedKey = "12345"; // Set your desired activation key here
+
+            const progressElement = document.getElementById("progress");
+            const statusElement = document.getElementById("status");
+
+            if (providedKey === predefinedKey) {
+                progressElement.textContent = "Activating...";
+                setTimeout(() => {
+                    document.cookie = "access=1; path=/"; // Set the access cookie
+                    progressElement.textContent = "Activation Complete!";
+                    statusElement.textContent = "Redirecting to the Welcome Page...";
+                    setTimeout(() => {
+                        window.location.href = "/welcome"; // Redirect to Welcome Page
+                    }, 2000);
+                }, 2000); // Simulate progress delay
+            } else {
+                progressElement.textContent = "Activation Failed!";
+                statusElement.textContent = "Invalid activation key.";
+            }
+        }
+
+        function deleteCookieAndRedirect() {
+            document.cookie = "access=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+            window.location.href = "/index.html"; // Redirect to Main Page
+        }
+
+        function keyHandler(event) {
+            if (event.key === currentKey) {
+                deleteCookieAndRedirect(); // Delete the cookie and redirect
+            }
+        }
+
+        window.onload = function() {
+            document.body.style.display = "none"; // Hide content until access is verified
+            currentKey = getRemoverKeyFromCookie();
+            checkAccess(); // Check if user already has access
+            activate(); // Run activation logic
+            document.addEventListener("keydown", keyHandler); // Attach key listener
+        };
+    </script>
+</head>
+<body>
+    <h1>Activate Access</h1>
+    <p id="progress"></p>
+    <p id="status" style="color: red;"></p>
+</body>
+</html>
