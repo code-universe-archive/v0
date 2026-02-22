@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: none; /* Hide content until access is verified */
+        }
+        .container {
+            text-align: center;
+            margin-top: 10%;
+            padding: 20px;
+            background: white;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+        }
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .custom-buttons {
+            margin-top: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 15px 20px;
+            background-color: #007bff; /* Matching footer with button colors */
+            color: white;
+            font-size: 0.9em;
+            border-top: 1px solid #0056b3;
+        }
+        footer p {
+            margin: 0;
+            line-height: 1.5;
+        }
+        footer a {
+            color: #ffdd57;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        const defaultKey = "'"; // Default key for removing cookies
+        let currentKey = defaultKey;
+
+        function getRemoverKeyFromCookie() {
+            const cookies = document.cookie.split("; ");
+            const keyCookie = cookies.find(row => row.startsWith("removerKey="));
+            return keyCookie ? keyCookie.split("=")[1] : defaultKey;
+        }
+
+        function checkCookie() {
+            const cookies = document.cookie.split("; ");
+            const cookie = cookies.find(row => row.startsWith("access="));
+            if (!cookie || cookie.split("=")[1] !== "1") {
+                window.location.href = "/index.html"; // Redirect to Main Page
+            } else {
+                document.body.style.display = "block"; // Show content if access is valid
+            }
+        }
+
+        function setRemoverKey(newKey) {
+            document.cookie = `removerKey=${newKey}; path=/;`;
+            currentKey = newKey;
+            alert(`Remover key updated to: ${currentKey}`);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Website!</h1>
+        <p>You have successfully activated access and can now browse protected content.</p>
+        <button onclick="setRemoverKey(prompt('Enter new remover key:'))">Change Remover Key</button>
+        <button onclick="window.location.href = '/updates.txt';">View Updates</button>
+        
+        <!-- Section for Custom Buttons -->
+        <div class="custom-buttons">
+            <button onclick="window.location.href = '/section1.html';">Go to Section 1</button>
+            <button onclick="window.location.href = '/section2.html';">Go to Section 2</button>
+            <button onclick="window.location.href = 'https://externalwebsite.com';">Visit External Site</button>
+        </div>
+    </div>
+    <footer>
+        <p>
+            Disclaimer: This website and its contents are provided for entertainment purposes only. We are not responsible for any misuse of the services offered, including violations of rules, policies, or laws that come to your location or institution. Accessing this website using devices or networks that are not personally owned, such as school property, is strictly prohibited. Use of this website during designated school hours is also not allowed. By using this website, you know that you are solely responsible for ensuring compliance with all applicable regulations.
+        </p>
+    </footer>
+    <script>
+        window.onload = function() {
+            document.body.style.display = "none"; // Hide content until access is verified
+            currentKey = getRemoverKeyFromCookie();
+            checkCookie();
+        };
+    </script>
+</body>
+</html>
