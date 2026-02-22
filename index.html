@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Configuration Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: none; /* Hide content until access is verified */
+        }
+        .container {
+            text-align: center;
+            margin-top: 20%;
+            padding: 20px;
+            background: white;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+        }
+        p {
+            color: #555;
+            font-size: 1.2em;
+        }
+        code {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #eaeaea;
+            border-radius: 5px;
+            font-family: monospace;
+            color: #333;
+        }
+    </style>
+    <script>
+        const defaultKey = "'"; // Default key for removing cookies
+        let currentKey = defaultKey;
+
+        function getRemoverKeyFromCookie() {
+            const cookies = document.cookie.split("; ");
+            const keyCookie = cookies.find(row => row.startsWith("removerKey="));
+            return keyCookie ? keyCookie.split("=")[1] : defaultKey;
+        }
+
+        function checkAccess() {
+            const cookies = document.cookie.split("; ");
+            const cookie = cookies.find(row => row.startsWith("access="));
+            if (cookie && cookie.split("=")[1] === "1") {
+                // Valid cookie exists: Show content
+                document.body.style.display = "block"; // Display the page content
+                document.getElementById("message").textContent = "Redirecting you to the Welcome Page in 5 seconds...";
+                setTimeout(() => {
+                    window.location.href = "/welcome"; // Redirect to the Welcome Page after 5 seconds
+                }, 5000);
+            } else {
+                // Invalid or missing cookie: Show the error page content
+                document.body.style.display = "block"; // Show the error page content
+            }
+        }
+
+        function deleteCookieAndRedirect() {
+            document.cookie = "access=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+            window.location.href = "/index.html"; // Redirect to the main page
+        }
+
+        function keyHandler(event) {
+            if (event.key === currentKey) {
+                deleteCookieAndRedirect(); // Delete the cookie and redirect
+            }
+        }
+
+        window.onload = function() {
+            document.body.style.display = "none"; // Hide content until access is verified
+            currentKey = getRemoverKeyFromCookie();
+            checkAccess();
+            document.addEventListener("keydown", keyHandler); // Attach key listener
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Domain Configuration Error</h1>
+        <p>The domain for this website appears to be misconfigured.</p>
+        <p>Please check the following:</p>
+        <code>
+            CNAME Record Missing<br>
+            Registrar Not Found<br>
+            SSL/TLS Certificate Invalid
+        </code>
+        <p>If you're the owner of this domain, please update your settings or contact support.</p>
+        <p id="message"></p>
+    </div>
+</body>
+</html>
